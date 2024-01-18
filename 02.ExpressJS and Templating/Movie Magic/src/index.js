@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 configHandlebars(app);
-configExpress(app)
+configExpress(app);
 
 app.use(router);
 

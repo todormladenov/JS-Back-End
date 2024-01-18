@@ -3,6 +3,8 @@ const path = require('path');
 
 function configExpress(app) {
     app.use(express.static(path.join(__dirname, '..', 'public')));
+    app.use(express.urlencoded({ extended: false }));
+
     return app;
 }
 
