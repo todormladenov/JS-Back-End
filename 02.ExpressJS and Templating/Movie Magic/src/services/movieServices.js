@@ -8,3 +8,7 @@ exports.create = (movieData) => {
 exports.getAll = () => {
     return movies.slice();
 }
+
+exports.getById = (id) => {
+    return movies.find(m => m.id == id);
+}
