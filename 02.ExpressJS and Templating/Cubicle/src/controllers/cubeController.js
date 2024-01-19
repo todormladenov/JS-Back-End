@@ -5,4 +5,11 @@ router.get('/cube/create', (req, res) => {
     res.render('create');
 });
 
+router.post('/cube/create', (req, res) => {
+    const newCube = req.body;
+    cubeServices.addCube(newCube);
+
+    res.redirect('/');
+});
+
 module.exports = router;
