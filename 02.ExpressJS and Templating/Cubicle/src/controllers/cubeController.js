@@ -12,4 +12,11 @@ router.post('/cube/create', (req, res) => {
     res.redirect('/');
 });
 
+router.get('/cube/details/:id', (req, res) => {
+    const id = req.params.id;
+    const cube = cubeServices.getById(id);
+
+    res.render('details', cube)
+});
+
 module.exports = router;
