@@ -1,32 +1,25 @@
-const movies = require('../data/movies.json');
+const Movie = require('../models/Movie');
 
-exports.create = (movieData) => {
-    movieData.id = movies[movies.length - 1].id + 1;
-    movies.push(movieData);
-}
+exports.create = (movieData) => Movie.create(movieData);
 
-exports.getAll = () => {
-    return movies.slice();
-}
+exports.getAll = () => Movie.find();
 
-exports.getById = (id) => {
-    return movies.find(m => m.id == id);
-}
+exports.getById = (id) => Movie.findById(id);
 
 exports.search = (title, genre, year) => {
-    let result = movies.slice();
+    let result = {};
 
     if (title) {
-        result = result.filter(m => m.title.toLocaleLowerCase().includes(title.toLocaleLowerCase()));
+        result.title = new RegExp(title, 'i');
     }
 
     if (genre) {
-        result = result.filter(m => m.genre.toLocaleLowerCase() === genre.toLocaleLowerCase());
+        result.genre = genre.toLowerCase();
     }
 
     if (year) {
-        result = result.filter(m => m.year == year);
+        result.year = year;
     }
 
-    return result;  
+    return Movie.find(result);
 }
