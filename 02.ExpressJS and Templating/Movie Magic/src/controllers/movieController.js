@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const movieServices = require('../services/movieServices');
+const castServices = require('../services/castServices');
 
 router.get('/movie/create', (req, res) => {
     res.render('movieCreate');
@@ -9,7 +10,7 @@ router.post('/movie/create', async (req, res) => {
     const newMovie = req.body;
 
     await movieServices.create(newMovie);
-    
+
     res.redirect('/');
 });
 
@@ -19,6 +20,14 @@ router.get('/movie/details/:id', async (req, res) => {
 
     movie.ratingStars = '&#x2605'.repeat(movie.rating);
     res.render('details', movie);
+});
+
+router.get('/movie/:id/attach', async (req, res) => {
+    const movieId = req.params.id;
+    const movie = await movieServices.getById(movieId).lean();
+    const cast = await castServices.getAll().lean();
+
+    res.render('movie/attach', { movie, cast });
 });
 
 module.exports = router;
