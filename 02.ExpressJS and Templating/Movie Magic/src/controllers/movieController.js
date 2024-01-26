@@ -19,7 +19,7 @@ router.get('/movie/details/:id', async (req, res) => {
     const movie = await movieServices.getById(movieId).lean();
 
     movie.ratingStars = '&#x2605'.repeat(movie.rating);
-    res.render('details', movie);
+    res.render('details', { movie });
 });
 
 router.get('/movie/:id/attach', async (req, res) => {
