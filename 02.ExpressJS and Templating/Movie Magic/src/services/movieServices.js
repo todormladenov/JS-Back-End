@@ -6,6 +6,8 @@ exports.getAll = () => Movie.find();
 
 exports.getById = (id) => Movie.findById(id);
 
+exports.attach = (movieId, castId) => Movie.findByIdAndUpdate(movieId, { $push: { cast: castId }});
+
 exports.search = (title, genre, year) => {
     let result = {};
 
