@@ -1,32 +1,25 @@
-const cubes = require('../config/data');
+const Cube = require('../models/Cube');
 
-exports.getAll = () => {
-    return cubes.slice();
-};
+exports.getAll = () => Cube.find();
 
-exports.addCube = (newCube) => {
-    newCube.id = cubes[cubes.length - 1].id + 1;
-    cubes.push(newCube);
-};
+exports.addCube = (newCube) => Cube.create(newCube);
 
-exports.getById = (id) => {
-    return cubes.find(c => c.id == id);
-};
+exports.getById = (id) => Cube.findById(id);
 
 exports.search = (name, from, to) => {
-    let result = cubes.slice();
+    let result = {}
 
     if (name) {
-        result = result.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
+        result.name = new RegExp(name, 'i')
     }
 
     if (from) {
-        result = result.filter(c => c.difficulty >= from);
+        result.difficulty = {...result.difficulty, $gte: from}
     }
 
     if (to) {
-        result = result.filter(c => c.difficulty <= to);
+        result.difficulty = {...result.difficulty, $lte: to}
     }
 
-    return result;
+    return Cube.find(result);
 };
