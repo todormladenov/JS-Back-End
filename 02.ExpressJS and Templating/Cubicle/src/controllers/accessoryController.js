@@ -26,4 +26,12 @@ router.get('/accessory/details/:id', async (req, res) => {
     res.render('accessory/details', { ...accessory });
 });
 
+router.get('/accessory/search', async (req, res) => {
+    const name = req.query.name;
+
+    const accessories = await accessoryServices.search(name).lean();
+
+    res.render('accessory/accessory', { accessories });
+});
+
 module.exports = router;
