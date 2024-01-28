@@ -4,7 +4,7 @@ const castSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
-    }, 
+    },
     age: {
         type: Number,
         required: true,
@@ -23,7 +23,11 @@ const castSchema = new mongoose.Schema({
         type: String,
         required: true,
         match: /^https?:\/\//
-    }
+    },
+    movies: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Movie'
+    }]
 });
 
 const Cast = mongoose.model('Cast', castSchema);
