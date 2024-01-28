@@ -24,10 +24,9 @@ router.get('/movie/details/:id', async (req, res) => {
 
 router.get('/movie/:id/attach', async (req, res) => {
     const movieId = req.params.id;
-    const movie = await movieServices.getById(movieId).lean();
-    const cast = await castServices.getAll().lean();
+    const movie = await movieServices.getByIdWithAvailableCast(movieId);
 
-    res.render('movie/attach', { movie, cast });
+    res.render('movie/attach', { movie });
 });
 
 router.post('/movie/:id/attach', async (req, res) => {
