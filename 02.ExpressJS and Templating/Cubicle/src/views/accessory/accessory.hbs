@@ -1,0 +1,12 @@
+<h1>Accessories</h1>
+<form action="/accessory/search" method="GET">
+    <input type="text" class="search" name="name" placeholder="Search...">
+    <input type="submit" value="search">
+</form>
+{{#each accessories}}
+<div class="cube">
+    <img class="cube" src="{{imgUrl}}">
+    <p class="name">{{name}}</p>
+    <a class="btn" href="/accessory/details/{{_id}}">Details</a>
+</div>
+{{/each}}
