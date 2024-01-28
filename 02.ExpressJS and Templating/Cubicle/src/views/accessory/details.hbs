@@ -1,0 +1,19 @@
+<h1>{{name}}</h1>
+<img class="cube" src="{{imgUrl}}">
+<div class="details">
+    <p><span>Description:</span> {{description}}</p>
+    <a class="btn" href="/accessory">Back</a>
+</div>
+<h2>Cubes</h2>
+<div class="accessories">
+    {{#each cubes}}
+    <div class="accessory">
+        <img src="{{imgUrl}}" alt="{{name}}">
+        <h3>{{name}}</h3>
+        <p>{{description}}</p>
+        <p>{{difficulty}}</p>
+    </div>
+    {{else}}
+    <h3 class="italic">This accessory is not attached to any cubes yet...</h3>
+    {{/each}}
+</div>

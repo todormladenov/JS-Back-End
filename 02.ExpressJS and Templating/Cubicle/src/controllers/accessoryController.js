@@ -19,5 +19,11 @@ router.get('/accessory', async (req, res) => {
     res.render('accessory/accessory', { accessories });
 });
 
+router.get('/accessory/details/:id', async (req, res) => {
+    const accId = req.params.id;
+    const accessory = await accessoryServices.getById(accId).lean();
+
+    res.render('accessory/details', { ...accessory });
+});
 
 module.exports = router;
