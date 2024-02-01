@@ -9,7 +9,8 @@ router.get('/movie/create', isAuth, (req, res) => {
 
 router.post('/movie/create', isAuth, async (req, res) => {
     const newMovie = req.body;
-
+    newMovie.owner_id = req.user._id;
+    
     await movieServices.create(newMovie);
 
     res.redirect('/');
@@ -38,6 +39,13 @@ router.post('/movie/:id/attach', isAuth, async (req, res) => {
     await castServices.attach(movieId, castId);
 
     res.redirect(`/movie/${movieId}/attach`);
+});
+
+router.get('/movie/:id/edit', isAuth, async (req, res) => {
+    const movieId = req.params.id;
+    const movie = await movieServices.getById(movieId).lean();
+
+    res.render('movie/edit', { ...movie })
 });
 
 module.exports = router;
