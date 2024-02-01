@@ -1,7 +1,14 @@
 const Cast = require('../models/Cast');
 const Movie = require('../models/Movie');
+const User = require('../models/User');
 
-exports.create = (movieData) => Movie.create(movieData);
+exports.create = async (movieData, userId) => {
+    const movie = await Movie.create(movieData);
+
+    await User.findByIdAndUpdate(userId, { $push: { movies: movie._id } });
+
+    return movie;
+};
 
 exports.getAll = () => Movie.find();
 

@@ -9,9 +9,10 @@ router.get('/movie/create', isAuth, (req, res) => {
 
 router.post('/movie/create', isAuth, async (req, res) => {
     const newMovie = req.body;
-    newMovie.owner_id = req.user._id;
-    
-    await movieServices.create(newMovie);
+    const userId = req.user._id;
+    newMovie.owner_id = userId
+    console.log(req.user);
+    await movieServices.create(newMovie, userId);
 
     res.redirect('/');
 });
