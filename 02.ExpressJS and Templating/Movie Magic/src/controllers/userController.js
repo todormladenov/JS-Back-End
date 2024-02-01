@@ -18,4 +18,12 @@ router.get('/user/login', (req, res) => {
     res.render('user/login');
 });
 
+router.post('/user/login', async (req, res) => {
+    const userData = req.body;
+
+    const token = await userServices.login(userData);
+    res.cookie('auth', token);
+    res.redirect('/');
+});
+
 module.exports = router;

@@ -26,3 +26,26 @@ exports.register = async (userData) => {
 
     return token;
 };
+
+exports.login = async (userData) => {
+    const user = await User.findOne({ email: userData.email });
+    
+    if (!user) {
+        throw new Error('Email or password don\'t match');
+    }
+    
+    const isValid = await bcrypt.compare(userData.password, user.password);
+    
+    if (!isValid) {
+        throw new Error('Email or password don\'t match');
+    }
+
+    const payload = {
+        _id: user._id,
+        email: user.email
+    };
+
+    const token = await jwt.sign(payload, SECRET, { expiresIn: '2h' });
+
+    return token;
+};
