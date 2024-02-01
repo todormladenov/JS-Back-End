@@ -17,7 +17,7 @@ exports.getByIdWithAvailableCast = async (id) => {
     movie.availableCast = availableCast;
 
     return movie;
-}
+};
 
 exports.search = (title, genre, year) => {
     let result = {};
@@ -35,4 +35,6 @@ exports.search = (title, genre, year) => {
     }
 
     return Movie.find(result);
-}
+};
+
+exports.update = (movieId, movieData) => Movie.findByIdAndUpdate(movieId, movieData);

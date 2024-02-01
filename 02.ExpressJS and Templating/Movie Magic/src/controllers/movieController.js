@@ -48,4 +48,13 @@ router.get('/movie/:id/edit', isAuth, async (req, res) => {
     res.render('movie/edit', { ...movie })
 });
 
+router.post('/movie/:id/edit', isAuth, async (req, res) => {
+    const movieData = req.body;
+    const movieId = req.params.id;
+
+    await movieServices.update(movieId, movieData);
+
+    res.redirect(`/movie/details/${movieId}`);
+})
+
 module.exports = router;
