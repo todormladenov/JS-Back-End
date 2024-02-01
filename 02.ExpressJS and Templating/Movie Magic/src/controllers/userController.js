@@ -20,10 +20,15 @@ router.get('/user/login', (req, res) => {
 
 router.post('/user/login', async (req, res) => {
     const userData = req.body;
-
     const token = await userServices.login(userData);
+    
     res.cookie('auth', token);
     res.redirect('/');
+});
+
+router.get('/user/logout', (req, res) => {
+    res.clearCookie('auth');
+    res.redirect('/')
 });
 
 module.exports = router;
