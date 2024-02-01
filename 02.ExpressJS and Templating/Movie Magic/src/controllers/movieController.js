@@ -1,12 +1,13 @@
 const router = require('express').Router();
 const movieServices = require('../services/movieServices');
 const castServices = require('../services/castServices');
+const { isAuth } = require('../middlewares/authMiddleware');
 
-router.get('/movie/create', (req, res) => {
+router.get('/movie/create', isAuth, (req, res) => {
     res.render('movie/movieCreate');
 });
 
-router.post('/movie/create', async (req, res) => {
+router.post('/movie/create', isAuth, async (req, res) => {
     const newMovie = req.body;
 
     await movieServices.create(newMovie);
@@ -22,14 +23,14 @@ router.get('/movie/details/:id', async (req, res) => {
     res.render('movie/details', { movie });
 });
 
-router.get('/movie/:id/attach', async (req, res) => {
+router.get('/movie/:id/attach', isAuth, async (req, res) => {
     const movieId = req.params.id;
     const movie = await movieServices.getByIdWithAvailableCast(movieId);
 
     res.render('movie/attach', { movie });
 });
 
-router.post('/movie/:id/attach', async (req, res) => {
+router.post('/movie/:id/attach', isAuth, async (req, res) => {
     const movieId = req.params.id;
     const castId = req.body.cast;
 
