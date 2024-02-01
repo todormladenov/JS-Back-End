@@ -3,7 +3,7 @@ const movieServices = require('../services/movieServices');
 const castServices = require('../services/castServices');
 
 router.get('/movie/create', (req, res) => {
-    res.render('movieCreate');
+    res.render('movie/movieCreate');
 });
 
 router.post('/movie/create', async (req, res) => {
@@ -19,7 +19,7 @@ router.get('/movie/details/:id', async (req, res) => {
     const movie = await movieServices.getById(movieId).lean();
 
     movie.ratingStars = '&#x2605'.repeat(movie.rating);
-    res.render('details', { movie });
+    res.render('movie/details', { movie });
 });
 
 router.get('/movie/:id/attach', async (req, res) => {
