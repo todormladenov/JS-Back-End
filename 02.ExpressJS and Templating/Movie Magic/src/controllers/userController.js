@@ -9,9 +9,13 @@ router.post('/user/register', async (req, res) => {
     const userData = req.body;
 
     const token = await userServices.register(userData);
-    
+
     res.cookie('auth', token);
     res.redirect('/');
+});
+
+router.get('/user/login', (req, res) => {
+    res.render('user/login');
 });
 
 module.exports = router;
