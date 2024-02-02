@@ -45,3 +45,19 @@ exports.search = (title, genre, year) => {
 };
 
 exports.update = (movieId, movieData) => Movie.findByIdAndUpdate(movieId, movieData);
+
+exports.delete = async (movieId, userId) => {
+    const deletedMovie = await Movie.findByIdAndDelete(movieId);
+
+    if (!deletedMovie) {
+        throw new Error('Movie doesn\'t exist');
+    }
+
+    if (deletedMovie.owner_id != userId) {
+        throw new Error('Unauthorize to delete this movie');
+    }
+
+    await User.findByIdAndUpdate(userId, { $pull: { movies: movieId } });
+
+    return deletedMovie;
+};
