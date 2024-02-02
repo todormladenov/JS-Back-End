@@ -1,12 +1,13 @@
 const router = require('express').Router();
 const cubeServices = require('../services/cubeServices');
 const accessoryServices = require('../services/accessoryServices');
+const { isAuth } = require('../middlewares/authMiddleware');
 
-router.get('/cube/create', (req, res) => {
+router.get('/cube/create', isAuth, (req, res) => {
     res.render('create');
 });
 
-router.post('/cube/create', async (req, res) => {
+router.post('/cube/create', isAuth, async (req, res) => {
     const newCube = req.body;
     await cubeServices.addCube(newCube);
 
@@ -20,14 +21,14 @@ router.get('/cube/details/:id', async (req, res) => {
     res.render('details', cube)
 });
 
-router.get('/attach/accessory/:id', async (req, res) => {
+router.get('/attach/accessory/:id', isAuth, async (req, res) => {
     const cubeId = req.params.id;
     const cube = await cubeServices.getByIdWithAvailableAcc(cubeId);
 
     res.render('attach', { ...cube });
 });
 
-router.post('/attach/accessory/:id', async (req, res) => {
+router.post('/attach/accessory/:id', isAuth, async (req, res) => {
     const cubeId = req.params.id;
     const accId = req.body.accessories;
 
