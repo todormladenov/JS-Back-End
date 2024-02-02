@@ -18,4 +18,13 @@ router.get('/user/register', (req, res) => {
     res.render('user/register');
 });
 
+router.post('/user/register', async (req, res) => {
+    const { email, password, rePassword } = req.body;
+
+    const token = await userServices.register(email, password, rePassword);
+
+    res.cookie('auth', token);
+    res.redirect('/');
+});
+
 module.exports = router;
