@@ -1,16 +1,30 @@
 const Accessory = require('../models/Accessory');
 const Cube = require('../models/Cube');
+const User = require('../models/User');
 
 exports.getAll = () => Cube.find();
 
-exports.addCube = (newCube) => Cube.create(newCube);
+exports.addCube = async (newCube, userId) => {
+    const user = User.findById(userId);
+
+    if (!user) {
+        throw new Error('User doesn\'t exist');
+    }
+
+    newCube.owner_id = userId;
+    const cube = await Cube.create(newCube);
+
+    await User.findByIdAndUpdate(userId, { $push: { cubes: cube._id } });
+
+    return cube;
+};
 
 exports.getById = (id) => Cube.findById(id).populate('accessories');
 
 exports.getByIdWithAvailableAcc = async (id) => {
     const cube = await Cube.findById(id).lean();
 
-    const availableAccessories = await Accessory.find({ _id: { $nin: cube.accessories} }).lean();
+    const availableAccessories = await Accessory.find({ _id: { $nin: cube.accessories } }).lean();
 
     cube.availableAccessories = availableAccessories;
 

@@ -9,7 +9,7 @@ router.get('/cube/create', isAuth, (req, res) => {
 
 router.post('/cube/create', isAuth, async (req, res) => {
     const newCube = req.body;
-    await cubeServices.addCube(newCube);
+    await cubeServices.addCube(newCube, req.user._id);
 
     res.redirect('/');
 });
