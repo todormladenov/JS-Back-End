@@ -2,6 +2,7 @@ const router = require('express').Router();
 const cubeServices = require('../services/cubeServices');
 const accessoryServices = require('../services/accessoryServices');
 const { isAuth } = require('../middlewares/authMiddleware');
+const { getDifficulties } = require('../utils/difficultyOption');
 
 router.get('/cube/create', isAuth, (req, res) => {
     res.render('create');
@@ -41,6 +42,7 @@ router.post('/attach/accessory/:id', isAuth, async (req, res) => {
 router.get('/cube/:id/edit', isAuth, async (req, res) => {
     const cubeId = req.params.id;
     const cube = await cubeServices.getById(cubeId).lean();
+    cube.options = getDifficulties(cube.difficulty);
 
     res.render('edit', { ...cube });
 })
