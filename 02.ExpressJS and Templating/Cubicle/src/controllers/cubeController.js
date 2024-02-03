@@ -58,5 +58,14 @@ router.post('/cube/:id/edit', isAuth, async (req, res) => {
     res.redirect(`/cube/details/${cubeId}`);
 });
 
+router.get('/cube/:id/delete', async (req, res) => { 
+    const cubeId = req.params.id;
+    const userId = req.user._id;
+
+    await cubeServices.delete(cubeId, userId);
+
+    res.redirect('/');
+});
+
 
 module.exports = router;

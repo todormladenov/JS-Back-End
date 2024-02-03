@@ -63,4 +63,18 @@ exports.update = async (cubeId, updatedCube, userId) => {
     }
 
     return Cube.findByIdAndUpdate(cubeId, updatedCube);
-}
+};
+
+exports.delete = async (cubeId, userId) => {
+    const cube = await Cube.findById(cubeId);
+
+    if (!cube) {
+        throw new Error('Cube doesn\'t exist');
+    }
+
+    if (userId != cube.owner_id) {
+        throw new Error('You can\'t update this cube');
+    }
+
+    return Cube.findByIdAndDelete(cubeId);
+};
