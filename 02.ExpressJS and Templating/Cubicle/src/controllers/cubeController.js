@@ -38,4 +38,11 @@ router.post('/attach/accessory/:id', isAuth, async (req, res) => {
     res.redirect(`/attach/accessory/${cubeId}`);
 });
 
+router.get('/cube/:id/edit', isAuth, async (req, res) => {
+    const cubeId = req.params.id;
+    const cube = await cubeServices.getById(cubeId).lean();
+
+    res.render('edit', { ...cube });
+})
+
 module.exports = router;
