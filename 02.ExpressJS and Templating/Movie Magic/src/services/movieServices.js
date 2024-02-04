@@ -14,7 +14,25 @@ exports.getAll = () => Movie.find();
 
 exports.getById = (id) => Movie.findById(id).populate('cast');
 
-exports.attach = (movieId, castId) => Movie.findByIdAndUpdate(movieId, { $push: { cast: castId } });
+exports.attach = async (movieId, castId, userId) => {
+    const movie = await Movie.findById(movieId);
+
+    if (!movie) {
+        throw new Error('Movie doesn\'t exist');
+    }
+
+    if (movie.cast.includes(castId)) {
+        throw new Error('Cast already added');
+    }
+
+    if (userId != movie.owner_id) {
+        throw new Error('Unauthorize to edit this movie');
+
+    }
+
+    await Cast.findByIdAndUpdate(castId, { $push: { movies: movieId } });
+    return await Movie.findByIdAndUpdate(movieId, { $push: { cast: castId } });
+};
 
 exports.getByIdWithAvailableCast = async (id) => {
     const movie = await Movie.findById(id).lean();

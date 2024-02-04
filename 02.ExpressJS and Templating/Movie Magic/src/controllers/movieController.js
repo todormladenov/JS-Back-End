@@ -29,16 +29,16 @@ router.get('/movie/details/:id', async (req, res) => {
 router.get('/movie/:id/attach', isAuth, async (req, res) => {
     const movieId = req.params.id;
     const movie = await movieServices.getByIdWithAvailableCast(movieId);
-
+    
     res.render('movie/attach', { movie });
 });
 
 router.post('/movie/:id/attach', isAuth, async (req, res) => {
     const movieId = req.params.id;
     const castId = req.body.cast;
+    const userId = req.user._id;
 
-    await movieServices.attach(movieId, castId);
-    await castServices.attach(movieId, castId);
+    await movieServices.attach(movieId, castId, userId);
 
     res.redirect(`/movie/${movieId}/attach`);
 });
