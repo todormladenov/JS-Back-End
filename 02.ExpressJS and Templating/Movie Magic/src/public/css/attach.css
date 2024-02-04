@@ -28,22 +28,6 @@ input[type="number"]::-webkit-outer-spin-button {
   width: 40%;
 }
 
-#attach-btn {
-  border: 1px solid black;
-  background: #6d6875;
-  font-size: 18px;
-  color: white;
-  margin-top: 20px;
-  padding: 10px 43px;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
-#attach-btn:hover {
-  background: rgba(20, 20, 20, 0.8);
-  padding: 10px 80px;
-}
-
 .info-cast {
   width: 250px;
   background: #6d6875;
