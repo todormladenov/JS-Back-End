@@ -77,7 +77,7 @@ exports.update = async (movieId, movieData, userId) => {
 };
 
 exports.delete = async (movieId, userId) => {
-    const movie = Movie.findById(movieData);
+    const movie = await Movie.findById(movieId);
 
     if (!movie) {
         throw new Error('Movie doesn\'t exist');
@@ -86,6 +86,8 @@ exports.delete = async (movieId, userId) => {
     if (movie.owner_id != userId) {
         throw new Error('Unauthorize to delete this movie');
     }
+
+    await Cast.updateMany({ movies: movieId }, { $pull: { movies: movieId } });
 
     await User.findByIdAndUpdate(userId, { $pull: { movies: movieId } });
 
