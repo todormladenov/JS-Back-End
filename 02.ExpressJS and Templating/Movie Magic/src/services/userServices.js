@@ -29,13 +29,13 @@ exports.register = async (userData) => {
 
 exports.login = async (userData) => {
     const user = await User.findOne({ email: userData.email });
-    
+
     if (!user) {
         throw new Error('Email or password don\'t match');
     }
-    
+
     const isValid = await bcrypt.compare(userData.password, user.password);
-    
+
     if (!isValid) {
         throw new Error('Email or password don\'t match');
     }
@@ -49,3 +49,5 @@ exports.login = async (userData) => {
 
     return token;
 };
+
+exports.getUserWithMovies = (userId) => User.findById(userId).populate('movies');
