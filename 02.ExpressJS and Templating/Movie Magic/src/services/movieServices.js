@@ -44,20 +44,32 @@ exports.search = (title, genre, year) => {
     return Movie.find(result);
 };
 
-exports.update = (movieId, movieData) => Movie.findByIdAndUpdate(movieId, movieData);
+exports.update = async (movieId, movieData, userId) => {
+    const movie = Movie.findById(movieData);
 
-exports.delete = async (movieId, userId) => {
-    const deletedMovie = await Movie.findByIdAndDelete(movieId);
-
-    if (!deletedMovie) {
+    if (!movie) {
         throw new Error('Movie doesn\'t exist');
     }
 
-    if (deletedMovie.owner_id != userId) {
+    if (movie.owner_id != userId) {
+        throw new Error('Unauthorize to edit this movie');
+    }
+
+    return await Movie.findByIdAndUpdate(movieId, movieData);
+};
+
+exports.delete = async (movieId, userId) => {
+    const movie = Movie.findById(movieData);
+
+    if (!movie) {
+        throw new Error('Movie doesn\'t exist');
+    }
+
+    if (movie.owner_id != userId) {
         throw new Error('Unauthorize to delete this movie');
     }
 
     await User.findByIdAndUpdate(userId, { $pull: { movies: movieId } });
 
-    return deletedMovie;
+    return await Movie.findByIdAndDelete(movieId);
 };
