@@ -1,6 +1,7 @@
 const Cast = require('../models/Cast');
 const Movie = require('../models/Movie');
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 exports.create = async (movieData, userId) => {
     const movie = await Movie.create(movieData);
@@ -12,13 +13,33 @@ exports.create = async (movieData, userId) => {
 
 exports.getAll = () => Movie.find();
 
-exports.getById = (id) => Movie.findById(id).populate('cast');
+exports.getById = async (id) => {
+    id = new mongoose.Types.ObjectId(id);
+    const movie = await Movie.findById(id).populate('cast').lean();
+
+    if (!movie) {
+        throw new Error('Movie not found');
+    }
+
+    return movie;
+}
 
 exports.attach = async (movieId, castId, userId) => {
-    const movie = await Movie.findById(movieId);
+    castId = new mongoose.Types.ObjectId(castId);
+
+    const movie = await this.getById(movieId);
+    const cast = await Cast.findById(castId);
 
     if (!movie) {
         throw new Error('Movie doesn\'t exist');
+    }
+
+    if (!cast) {
+        throw new Error('Cast doesn\'t exist');
+    }
+
+    if (movie.owner_id != userId) {
+        throw new Error('You are not the owner of this movie.')
     }
 
     if (movie.cast.includes(castId)) {
@@ -29,13 +50,17 @@ exports.attach = async (movieId, castId, userId) => {
         throw new Error('Unauthorize to edit this movie');
 
     }
-
+    
     await Cast.findByIdAndUpdate(castId, { $push: { movies: movieId } });
     return await Movie.findByIdAndUpdate(movieId, { $push: { cast: castId } });
 };
 
-exports.getByIdWithAvailableCast = async (id) => {
-    const movie = await Movie.findById(id).lean();
+exports.getByIdWithAvailableCast = async (movieId, userId) => {
+    const movie = await this.getById(movieId);
+
+    if (movie.owner_id != userId) {
+        throw new Error('You are not the owner of this movie.')
+    }
 
     const availableCast = await Cast.find({ _id: { $nin: movie.cast } }).lean();
 
@@ -63,7 +88,7 @@ exports.search = (title, genre, year) => {
 };
 
 exports.update = async (movieId, movieData, userId) => {
-    const movie = Movie.findById(movieData);
+    const movie = await this.getById(movieId);
 
     if (!movie) {
         throw new Error('Movie doesn\'t exist');
@@ -73,11 +98,13 @@ exports.update = async (movieId, movieData, userId) => {
         throw new Error('Unauthorize to edit this movie');
     }
 
-    return await Movie.findByIdAndUpdate(movieId, movieData);
+    Object.assign(movie, movieData);
+    
+    return await movie.save();
 };
 
 exports.delete = async (movieId, userId) => {
-    const movie = await Movie.findById(movieId);
+    const movie = await this.getById(movieId);
 
     if (!movie) {
         throw new Error('Movie doesn\'t exist');

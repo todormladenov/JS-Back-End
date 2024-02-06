@@ -26,18 +26,33 @@ router.post('/movie/create', isAuth, async (req, res) => {
 
 router.get('/movie/details/:id', async (req, res) => {
     const movieId = req.params.id;
-    const movie = await movieServices.getById(movieId).lean();
-    const isOwner = movie.owner_id == req.user?._id;
 
-    movie.ratingStars = '&#x2605'.repeat(movie.rating);
-    res.render('movie/details', { movie, isOwner });
+    try {
+        const movie = await movieServices.getById(movieId);
+        const isOwner = movie.owner_id == req.user?._id;
+
+        movie.ratingStars = '&#x2605'.repeat(movie.rating);
+        res.render('movie/details', { movie, isOwner });
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
+    }
 });
 
 router.get('/movie/:id/attach', isAuth, async (req, res) => {
     const movieId = req.params.id;
-    const movie = await movieServices.getByIdWithAvailableCast(movieId);
+    const userId = req.user._id;
 
-    res.render('movie/attach', { movie });
+    try {
+        const movie = await movieServices.getByIdWithAvailableCast(movieId, userId);
+
+        res.render('movie/attach', { movie });
+    } catch (error) {
+        const message = getErrorMessage(error);
+
+        res.render('404', { error: message });
+    }
+
 });
 
 router.post('/movie/:id/attach', isAuth, async (req, res) => {
@@ -45,16 +60,30 @@ router.post('/movie/:id/attach', isAuth, async (req, res) => {
     const castId = req.body.cast;
     const userId = req.user._id;
 
-    await movieServices.attach(movieId, castId, userId);
+    try {
+        await movieServices.attach(movieId, castId, userId);
+        
+        res.redirect(`/movie/${movieId}/attach`);
+    } catch (error) {
+        const message = getErrorMessage(error);
 
-    res.redirect(`/movie/${movieId}/attach`);
+        res.render('404', { error: message });
+    }
+
 });
 
 router.get('/movie/:id/edit', isAuth, async (req, res) => {
     const movieId = req.params.id;
-    const movie = await movieServices.getById(movieId).lean();
 
-    res.render('movie/edit', { ...movie })
+    try {
+        const movie = await movieServices.getById(movieId);
+        
+        res.render('movie/edit', { ...movie });
+    } catch (error) {
+        const message = getErrorMessage(error);
+
+        res.render('404', { error: message });
+    }
 });
 
 router.post('/movie/:id/edit', isAuth, async (req, res) => {
@@ -62,15 +91,30 @@ router.post('/movie/:id/edit', isAuth, async (req, res) => {
     const movieId = req.params.id;
     const userId = req.user._id;
 
-    await movieServices.update(movieId, movieData, userId);
+    try {
+        await movieServices.update(movieId, movieData, userId);
+        
+        res.redirect(`/movie/details/${movieId}`);
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('movie/edit', { ...movieData, error: message });
+    }
 
-    res.redirect(`/movie/details/${movieId}`);
 })
 
 router.get('/movie/:id/delete', isAuth, async (req, res) => {
-    await movieServices.delete(req.params.id, req.user._id);
+    const userId = req.user._id;
+    const movieId = req.params.id;
 
-    res.redirect('/');
+    try {
+        await movieServices.delete(req.params.id, userId);
+        
+        res.redirect('/');
+    } catch (error) {
+        const message = getErrorMessage(error);
+
+        res.render('404', { error: message });
+    }
 });
 
 
