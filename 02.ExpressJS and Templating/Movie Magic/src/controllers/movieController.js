@@ -2,6 +2,7 @@ const router = require('express').Router();
 const movieServices = require('../services/movieServices');
 const castServices = require('../services/castServices');
 const { isAuth } = require('../middlewares/authMiddleware');
+const { getErrorMessage } = require('../utils/error');
 
 router.get('/movie/create', isAuth, (req, res) => {
     res.render('movie/movieCreate');
@@ -10,11 +11,17 @@ router.get('/movie/create', isAuth, (req, res) => {
 router.post('/movie/create', isAuth, async (req, res) => {
     const newMovie = req.body;
     const userId = req.user._id;
-    newMovie.owner_id = userId
+    newMovie.owner_id = userId;
 
-    await movieServices.create(newMovie, userId);
+    try {
+        await movieServices.create(newMovie, userId);
 
-    res.redirect('/');
+        res.redirect('/');
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('movie/movieCreate', { ...newMovie, error: message });
+    }
+
 });
 
 router.get('/movie/details/:id', async (req, res) => {
@@ -29,7 +36,7 @@ router.get('/movie/details/:id', async (req, res) => {
 router.get('/movie/:id/attach', isAuth, async (req, res) => {
     const movieId = req.params.id;
     const movie = await movieServices.getByIdWithAvailableCast(movieId);
-    
+
     res.render('movie/attach', { movie });
 });
 
