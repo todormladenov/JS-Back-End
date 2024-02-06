@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { isAuth } = require('../middlewares/authMiddleware');
 const userServices = require('../services/userServices');
+const { getErrorMessage } = require('../utils/error');
 
 router.get('/user/register', (req, res) => {
     res.render('user/register');
@@ -9,10 +10,17 @@ router.get('/user/register', (req, res) => {
 router.post('/user/register', async (req, res) => {
     const userData = req.body;
 
-    const token = await userServices.register(userData);
+    try {
+        const token = await userServices.register(userData);
 
-    res.cookie('auth', token);
-    res.redirect('/');
+        res.cookie('auth', token);
+        res.redirect('/');
+    } catch (error) {
+        const message = getErrorMessage(error);
+
+        res.render('user/register', { ...userData, error: message });
+    }
+
 });
 
 router.get('/user/login', (req, res) => {
@@ -21,10 +29,16 @@ router.get('/user/login', (req, res) => {
 
 router.post('/user/login', async (req, res) => {
     const userData = req.body;
-    const token = await userServices.login(userData);
+    try {
+        const token = await userServices.login(userData);
 
-    res.cookie('auth', token);
-    res.redirect('/');
+        res.cookie('auth', token);
+        res.redirect('/');
+    } catch (error) {
+        const message = getErrorMessage(error);
+
+        res.render('user/login', { ...userData, error: message });
+    }
 });
 
 router.get('/user/logout', (req, res) => {
@@ -33,8 +47,15 @@ router.get('/user/logout', (req, res) => {
 });
 
 router.get('/user/posts', isAuth, async (req, res) => {
-    const userWithPosts = await userServices.getUserWithMovies(req.user._id).lean();
-    res.render('user/posts', { ...userWithPosts });
+    try {
+        const userWithPosts = await userServices.getUserWithMovies(req.user._id).lean();
+
+        res.render('user/posts', { ...userWithPosts });
+    } catch (error) {
+        const message = getErrorMessage(error);
+
+        res.render('user/posts', { error: message });
+    }
 });
 
 module.exports = router;

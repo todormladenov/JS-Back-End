@@ -4,14 +4,18 @@ const jwt = require('../utils/jwt');
 const { SECRET } = require('../config/config');
 
 exports.register = async (userData) => {
-    const existingUser = User.findOne({ email: userData.email });
+    const existingUser = await User.findOne({ email: userData.email });
 
     if (existingUser) {
-        throw new Error('Email exists');
+        throw new Error('Invalid email or password');
     }
 
     if (userData.password != userData.rePassword) {
         throw new Error('Passwords must match');
+    }
+
+    if (!userData.password.match(/^\w{6,}$/)) {
+        throw new Error('Password should be at least 6 characters long and should consist only of English letters and digit.')
     }
 
     const hash = await bcrypt.hash(userData.password, 12);
