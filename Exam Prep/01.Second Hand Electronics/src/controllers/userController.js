@@ -19,4 +19,8 @@ router.post('/user/register', async (req, res) => {
     }
 });
 
+router.get('/user/login', (req, res) => {
+    res.render('login');
+});
+
 module.exports = router;
