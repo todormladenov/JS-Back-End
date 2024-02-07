@@ -3,7 +3,7 @@ const { SECRET } = require('../config/config');
 
 exports.auth = async (req, res, next) => {
     const token = req.cookies.auth;
-
+    
     if (!token) {
         return next();
     }
