@@ -5,7 +5,7 @@ const jwt = require('../utils/jwt');
 const { SECRET } = require('../config/config');
 
 exports.register = async (userData) => {
-    const existingUser = await User.findOne({$or: [{email: userData.email}, {username: userData.username}]});
+    const existingUser = await User.findOne({ $or: [{ email: userData.email }, { username: userData.username }] });
 
     if (!validator.isEmail(userData.email)) {
         throw new Error('Invalid email format');
@@ -31,6 +31,23 @@ exports.register = async (userData) => {
         password: hash
     });
 
-    const token = await jwt.sign({_id: user._id, username: user.username}, SECRET);
+    const token = await jwt.sign({ _id: user._id, username: user.username }, SECRET);
+    return token;
+};
+
+exports.login = async (email, password) => {
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+        throw new Error('Invalid email or password');
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+
+    if (!isValid) {
+        throw new Error('Invalid email or password');
+    }
+
+    const token = await jwt.sign({ _id: user._id, username: user.username }, SECRET);
     return token;
 };
