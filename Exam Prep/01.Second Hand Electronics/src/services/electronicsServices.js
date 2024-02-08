@@ -1,4 +1,5 @@
 const Electronics = require('../models/Electronics');
+const User = require('../models/User');
 
 exports.getAll = () => Electronics.find();
 
@@ -15,11 +16,12 @@ exports.create = async (userId, offerData) => {
 };
 
 exports.getById = async (offerId, userId) => {
-    const electronic = await Electronics.findById(offerId).lean();
+    const electronic = await Electronics.findById(offerId).populate('buyingList').lean();
 
     if (userId) {
+        electronic.isUser = true;
         electronic.isOwner = electronic.owner == userId;
-        electronic.isBought = electronic.buyingList.includes(userId);
+        electronic.isBought = electronic.buyingList.some(user => user._id == userId);
     }
 
     return electronic
@@ -35,8 +37,10 @@ exports.update = async (offerData, offerId) => {
     }
 
     const electronic = await Electronics.findById(offerId);
-    
+
     Object.assign(electronic, offerData);
 
     return await electronic.save();
-}
+};
+
+exports.buy = (offerId, userId) => Electronics.findByIdAndUpdate(offerId, { $push: { buyingList: userId } });

@@ -84,4 +84,18 @@ router.post('/edit/:id', isAuth, async (req, res) => {
     }
 });
 
+router.get('/buy/:id', isAuth, async (req, res) => {
+    const userId = req.user._id;
+    const offerId = req.params.id;
+
+    try {
+        await electronicsServices.buy(offerId, userId);
+        
+        res.redirect(`/electronic/details/${offerId}`);
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
+    }
+});
+
 module.exports = router;

@@ -11,20 +11,24 @@
             <h3>Description: {{description}}</h3>
             <h2>Price: ${{price}}</h2>
         </div>
-        
+
 
         <div class="buttons">
 
             {{#if isOwner}}
             <a href="/edit/{{_id}}" class="edit-btn">Edit</a>
             <a href="/delete/{{_id}}" class="delete-btn">Delete</a>
-            {{else}}
-            <a href="/buy/{{_id}}" class="buy-btn">Buy</a>
             {{/if}}
 
-            {{#if isBought}}
-            <p><span class="buy">Thank You For Your Purchase</span></p>
-            {{/if}}
+        {{#if isUser}}
+            {{#unless isOwner}}
+                {{#unless isBought}}
+                    <a href="/buy/{{_id}}" class="buy-btn">Buy</a>
+                {{else}}
+                    <p><span class="buy">Thank You For Your Purchase</span></p>
+                {{/unless}}
+            {{/unless}}
+        {{/if}}
         </div>
     </div>
 </section>
