@@ -30,4 +30,19 @@ router.post('/create/offer', isAuth, async (req, res) => {
     }
 });
 
+router.get('/electronic/details/:id', async (req, res) => {
+    const userId = req.user?._id;
+    const offerId = req.params.id;
+
+    try {
+        const electronic = await electronicsServices.getById(offerId, userId);
+
+        res.render('details', { ...electronic });
+    } catch (error) {
+        console.log(error);
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
+    }
+});
+
 module.exports = router;

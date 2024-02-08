@@ -12,4 +12,15 @@ exports.create = async (userId, offerData) => {
     offerData.owner = userId;
 
     return await Electronics.create(offerData);
-}
+};
+
+exports.getById = async (offerId, userId) => {
+    const electronic = await Electronics.findById(offerId).lean();
+
+    if (userId) {
+        electronic.isOwner = electronic.owner == userId;
+        electronic.isBought = electronic.buyingList.includes(userId);
+    }
+
+    return electronic
+} 
