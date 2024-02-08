@@ -7,19 +7,21 @@
         <button type="submit" class="btn-search">Search</button>
     </form>
 
-    <!--If there are matches after search-->
     <div class="search-result">
+        {{#each electronics}}
         <div class="search-list">
-            <a href="#" class="added-electronics-in-market">
-                <img src="./image/tablet.webp" class="picture-added-electronics">
-                <h3>Tablet Apple iPad Air 16GB</h3>
-                <span>Price: $92</span>
+            <a href="/electronic/details/{{_id}}" class="added-electronics-in-market">
+                <img src="{{image}}" class="picture-added-electronics">
+                <h3>{{name}}</h3>
+                <span>Price: ${{price}}</span>
             </a>
         </div>
-
+        {{else}}
+        <div class="no-match">
+            <p>No match was found!</p>
+        </div>
+        {{/each}}
     </div>
-    <!--If there are no matches-->
-    <!-- <div class="no-match">
-                <p>No match was found!</p>
-            </div> -->
+
+
 </section>

@@ -1,5 +1,4 @@
 const Electronics = require('../models/Electronics');
-const User = require('../models/User');
 
 exports.getAll = () => Electronics.find();
 
@@ -44,3 +43,17 @@ exports.update = async (offerData, offerId) => {
 };
 
 exports.buy = (offerId, userId) => Electronics.findByIdAndUpdate(offerId, { $push: { buyingList: userId } });
+
+exports.search = (name, type) => {
+    let query = {};
+
+    if (name) {
+        query.name = new RegExp(name, 'i');
+    }
+
+    if (type) {
+        query.type = new RegExp(type, 'i');
+    }
+
+    return Electronics.find(query);
+}
