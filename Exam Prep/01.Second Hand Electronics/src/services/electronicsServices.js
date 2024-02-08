@@ -23,4 +23,6 @@ exports.getById = async (offerId, userId) => {
     }
 
     return electronic
-} 
+};
+
+exports.delete = (offerId) => Electronics.findByIdAndDelete(offerId);

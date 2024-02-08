@@ -39,9 +39,21 @@ router.get('/electronic/details/:id', async (req, res) => {
 
         res.render('details', { ...electronic });
     } catch (error) {
-        console.log(error);
         const message = getErrorMessage(error);
         res.render('404', { error: message });
+    }
+});
+
+router.get('/delete/:id', isAuth, async (req, res) => {
+    const offerId = req.params.id;
+
+    try {
+        await electronicsServices.delete(offerId);
+        
+        res.redirect('/catalog');
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message }); 
     }
 });
 
