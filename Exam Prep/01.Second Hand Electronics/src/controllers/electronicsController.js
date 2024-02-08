@@ -49,11 +49,24 @@ router.get('/delete/:id', isAuth, async (req, res) => {
 
     try {
         await electronicsServices.delete(offerId);
-        
+
         res.redirect('/catalog');
     } catch (error) {
         const message = getErrorMessage(error);
-        res.render('404', { error: message }); 
+        res.render('404', { error: message });
+    }
+});
+
+router.get('/edit/:id', isAuth, async (req, res) => {
+    const offerId = req.params.id;
+
+    try {
+        const electronic = await electronicsServices.getById(offerId);
+
+        res.render('edit', { ...electronic });
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
     }
 });
 
