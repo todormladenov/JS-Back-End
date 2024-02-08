@@ -70,4 +70,18 @@ router.get('/edit/:id', isAuth, async (req, res) => {
     }
 });
 
+router.post('/edit/:id', isAuth, async (req, res) => {
+    const offerData = req.body;
+    const offerId = req.params.id;
+
+    try {
+        const electronic = await electronicsServices.update(offerData, offerId);
+
+        res.redirect(`/electronic/details/${offerId}`);
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('edit', { ...offerData, error: message });
+    }
+});
+
 module.exports = router;

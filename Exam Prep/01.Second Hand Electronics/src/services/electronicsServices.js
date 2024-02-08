@@ -26,3 +26,17 @@ exports.getById = async (offerId, userId) => {
 };
 
 exports.delete = (offerId) => Electronics.findByIdAndDelete(offerId);
+
+exports.update = async (offerData, offerId) => {
+    const isEmpty = Object.values(offerData).some(el => el == '');
+
+    if (isEmpty) {
+        throw new Error('All fields are required');
+    }
+
+    const electronic = await Electronics.findById(offerId);
+    
+    Object.assign(electronic, offerData);
+
+    return await electronic.save();
+}
