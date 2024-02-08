@@ -17,4 +17,17 @@ router.get('/create/offer', isAuth, (req, res) => {
     res.render('create')
 });
 
+router.post('/create/offer', isAuth, async (req, res) => {
+    const userId = req.user._id;
+    const offerData = req.body;
+
+    try {
+        await electronicsServices.create(userId, offerData);
+        res.redirect('/catalog');
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('create', { ...offerData, error: message });
+    }
+});
+
 module.exports = router;
