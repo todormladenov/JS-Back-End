@@ -17,3 +17,5 @@ exports.getById = async (courseId, userId) => {
 
     return course;
 };
+
+exports.signUp = async (courseId, userId) => Course.findByIdAndUpdate(courseId, { $push: { signUpList: userId } });

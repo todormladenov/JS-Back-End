@@ -39,4 +39,17 @@ router.get('/course/details/:id', async (req, res) => {
     }
 });
 
+router.get('/course/sign/:id', async (req, res) => {
+    const courseId = req.params.id;
+    const userId = req.user?._id;
+
+    try {
+        await courseServices.signUp(courseId, userId);
+        res.redirect(`/course/details/${courseId}`);
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
+    }
+});
+
 module.exports = router;

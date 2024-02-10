@@ -9,7 +9,7 @@
         <h3>Price: €{{price}}</h3>
         <h3>By: {{owner.email}}</h3>
         {{#each signUpList}}
-        <h4>Signed By: cate.brown, nikolas.p</h4>
+        <h4>Signed By: {{username}}</h4>
         {{else}}
         <h4>Nobody has signed in for this course yet</h4>
         {{/each}}
@@ -27,7 +27,7 @@
         {{#if isUser}}
             {{#unless isOwner}}
                 {{#unless isSignUp}}
-                    <a href="/course/sing/{{_id}}">Sign up</a>
+                    <a href="/course/sign/{{_id}}">Sign up</a>
                 {{else}}
                     <p class="sign-up">You've already signed up for this course!</p>
                 {{/unless}}
