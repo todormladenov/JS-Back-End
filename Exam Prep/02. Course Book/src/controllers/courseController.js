@@ -26,4 +26,17 @@ router.get('/courses', async (req, res) => {
     res.render('catalog', { courses });
 });
 
+router.get('/course/details/:id', async (req, res) => {
+    const courseId = req.params.id;
+    const userId = req.user?._id;
+
+    try {
+        const course = await courseServices.getById(courseId, userId);
+        res.render('details', { ...course })
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
+    }
+});
+
 module.exports = router;
