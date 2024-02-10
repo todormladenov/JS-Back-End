@@ -7,4 +7,8 @@ router.use(homeController);
 router.use(userController);
 router.use(courseController);
 
+router.get('*', (req, res) => {
+    res.redirect('/404');
+})
+
 module.exports = router;
