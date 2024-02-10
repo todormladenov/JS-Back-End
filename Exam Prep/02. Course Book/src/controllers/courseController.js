@@ -21,4 +21,9 @@ router.post('/course/create', isAuth, async (req, res) => {
     }
 });
 
+router.get('/courses', async (req, res) => {
+    const courses = await courseServices.getAll().lean();
+    res.render('catalog', { courses });
+});
+
 module.exports = router;
