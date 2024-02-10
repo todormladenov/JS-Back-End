@@ -1,6 +1,12 @@
 const Course = require('../models/Course');
+const User = require('../models/User');
 
-exports.create = (courseData) => Course.create(courseData);
+exports.create = async (courseData, userId) => {
+    const course = await Course.create(courseData);
+    await User.findByIdAndUpdate(userId, { $push: { ownCourses: course._id } });
+
+    return course;
+}
 
 exports.getLastThree = () => Course.find().sort({ createdAt: -1 }).limit(3);
 
@@ -18,7 +24,10 @@ exports.getById = async (courseId, userId) => {
     return course;
 };
 
-exports.signUp = (courseId, userId) => Course.findByIdAndUpdate(courseId, { $push: { signUpList: userId } });
+exports.signUp = async (courseId, userId) => {
+    await User.findByIdAndUpdate(userId, { $push: { signUpCourses: courseId } });
+    return Course.findByIdAndUpdate(courseId, { $push: { signUpList: userId } });
+}
 
 exports.delete = (courseId) => Course.findByIdAndDelete(courseId);
 
@@ -28,4 +37,4 @@ exports.update = async (courseData, courseId) => {
     Object.assign(course, courseData);
 
     return course.save();
-}
+};

@@ -14,7 +14,15 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    ownCourses: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Course'
+    }],
+    signUpCourses: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Course'
+    }]
 });
 
 const User = mongoose.model('User', userSchema);

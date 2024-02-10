@@ -10,10 +10,11 @@ router.get('/course/create', isAuth, (req, res) => {
 
 router.post('/course/create', isAuth, async (req, res) => {
     const courseData = req.body;
-    courseData.owner = req.user._id;
+    const userId = req.user._id;
+    courseData.owner = userId;
 
     try {
-        await courseServices.create(courseData);
+        await courseServices.create(courseData, userId);
         res.redirect('/');
     } catch (error) {
         const message = getErrorMessage(error);
