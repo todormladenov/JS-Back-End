@@ -52,3 +52,5 @@ exports.login = async ({ email, password }) => {
 
     return token;
 };
+
+exports.getAllCourses = (userId) => User.findById(userId).populate('ownCourses').populate('signUpCourses');
