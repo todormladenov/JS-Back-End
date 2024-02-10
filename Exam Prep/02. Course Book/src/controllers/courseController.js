@@ -64,4 +64,27 @@ router.get('/course/delete/:id', isAuth, async (req, res) => {
     }
 });
 
+router.get('/course/edit/:id', isAuth, async (req, res) => {
+    try {
+        const course = await courseServices.getById(req.params.id);
+        res.render('edit', {...course});
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('404', { error: message });
+    }
+});
+
+router.post('/course/edit/:id', isAuth, async (req, res) => {
+    const courseData = req.body;
+    const courseId = req.params.id;
+
+    try {
+        await courseServices.update(courseData, courseId);
+        res.redirect(`/course/details/${courseId}`);
+    } catch (error) {
+        const message = getErrorMessage(error);
+        res.render('edit', { ...courseData, error: message });
+    }
+});
+
 module.exports = router;

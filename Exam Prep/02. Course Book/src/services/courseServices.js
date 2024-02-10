@@ -20,4 +20,12 @@ exports.getById = async (courseId, userId) => {
 
 exports.signUp = (courseId, userId) => Course.findByIdAndUpdate(courseId, { $push: { signUpList: userId } });
 
-exports.delete = async (courseId) => Course.findByIdAndDelete(courseId);
+exports.delete = (courseId) => Course.findByIdAndDelete(courseId);
+
+exports.update = async (courseData, courseId) => {
+    const course = await Course.findById(courseId);
+
+    Object.assign(course, courseData);
+
+    return course.save();
+}
