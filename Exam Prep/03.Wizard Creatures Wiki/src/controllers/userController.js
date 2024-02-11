@@ -20,4 +20,21 @@ router.post('/user/register', async (req, res) => {
     }
 });
 
+router.get('/user/login', (req, res) => {
+    res.render('login');
+});
+
+router.post('/user/login', async (req, res) => {
+    const userData = req.body;
+
+    try {
+        const token = await userServices.login(userData);
+
+        res.cookie('auth', token);
+        res.redirect('/');
+    } catch (error) {
+        res.render('login', { ...userData, error: getErrorMessage(error) });
+    }
+});
+
 module.exports = router;

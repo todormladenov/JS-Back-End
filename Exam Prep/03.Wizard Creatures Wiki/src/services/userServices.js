@@ -33,3 +33,25 @@ exports.register = async (userData) => {
 
     return token;
 };
+
+exports.login = async ({ email, password }) => {
+    if (email == '' || password == '') {
+        throw new Error('All fields are required')
+    }
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+        throw new Error('Email or password don\'t match');
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+
+    if (!isValid) {
+        throw new Error('Email or password don\'t match');
+    }
+
+    const token = await jwt.sign({ _id: user._id, email: email }, SECRET);
+
+    return token;
+};
