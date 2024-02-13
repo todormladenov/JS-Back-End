@@ -1,13 +1,14 @@
 const { getErrorMessage } = require('../utils/error');
 const userServices = require('../services/userServices');
+const { isGuest } = require('../middlewares/authMiddleware');
 
 const router = require('express').Router();
 
-router.get('/user/register', (req, res) => {
+router.get('/user/register', isGuest, (req, res) => {
     res.render('register');
 });
 
-router.post('/user/register', async (req, res) => {
+router.post('/user/register', isGuest, async (req, res) => {
     const userData = req.body;
 
     try {
@@ -20,11 +21,11 @@ router.post('/user/register', async (req, res) => {
     }
 });
 
-router.get('/user/login', (req, res) => {
+router.get('/user/login', isGuest, (req, res) => {
     res.render('login');
 });
 
-router.post('/user/login', async (req, res) => {
+router.post('/user/login', isGuest, async (req, res) => {
     const userData = req.body;
 
     try {
