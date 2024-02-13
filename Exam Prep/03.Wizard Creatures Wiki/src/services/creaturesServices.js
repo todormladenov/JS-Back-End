@@ -13,3 +13,7 @@ exports.create = async (creatureData, userId) => {
 };
 
 exports.getAll = () => Creature.find();
+
+exports.getByIdPopulated = (creatureId) => Creature.findById(creatureId).populate('votes').populate('owner');
+
+exports.vote = (creatureId, userId) => Creature.findByIdAndUpdate(creatureId, { $push: { votes: userId } });

@@ -24,4 +24,25 @@ router.get('/posts', async (req, res) => {
     res.render('catalog', { creatures });
 });
 
+router.get('/post/details/:id', async (req, res) => {
+    const createId = req.params.id;
+    const userId = req.user?._id;
+
+    const creature = await creaturesServices.getByIdPopulated(createId).lean();
+
+    creature.isOwner = creature.owner._id == userId;
+    creature.isVoted = creature.votes.some(users => users._id == userId);
+    creature.votedList = creature.votes.map(user => user.email).join(', ') || false;
+
+    res.render('details', { ...creature })
+});
+
+router.get('/post/vote/:id', isAuth, async (req, res) => {
+    const createId = req.params.id;
+    const userId = req.user._id;
+
+    await creaturesServices.vote(createId, userId);
+    res.redirect(`/post/details/${createId}`);
+});
+
 module.exports = router;
