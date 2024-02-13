@@ -25,10 +25,10 @@ router.get('/posts', async (req, res) => {
 });
 
 router.get('/post/details/:id', async (req, res) => {
-    const createId = req.params.id;
+    const creatureId = req.params.id;
     const userId = req.user?._id;
 
-    const creature = await creaturesServices.getByIdPopulated(createId).lean();
+    const creature = await creaturesServices.getByIdPopulated(creatureId).lean();
 
     creature.isOwner = creature.owner._id == userId;
     creature.isVoted = creature.votes.some(users => users._id == userId);
@@ -38,11 +38,38 @@ router.get('/post/details/:id', async (req, res) => {
 });
 
 router.get('/post/vote/:id', isAuth, async (req, res) => {
-    const createId = req.params.id;
+    const creatureId = req.params.id;
     const userId = req.user._id;
 
-    await creaturesServices.vote(createId, userId);
-    res.redirect(`/post/details/${createId}`);
+    await creaturesServices.vote(creatureId, userId);
+    res.redirect(`/post/details/${creatureId}`);
 });
+
+router.get('/post/edit/:id', isOwner, (req, res) => {
+    res.render('edit', { ...req.creature });
+});
+
+router.post('/post/edit/:id', isOwner, async (req, res) => {
+    const creatureId = req.params.id;
+    const creatureData = req.body;
+
+    try {
+        await creaturesServices.update(creatureData, creatureId);
+        res.redirect(`/post/details/${creatureId}`);
+    } catch (error) {
+        res.render('edit', { ...creatureData, error: getErrorMessage(error) });
+    }
+});
+
+async function isOwner(req, res, next) {
+    const creature = await creaturesServices.getById(req.params.id).lean();
+
+    if (creature.owner._id != req.user?._id) {
+        return res.redirect('/');
+    }
+
+    req.creature = creature;
+    next();
+}
 
 module.exports = router;
