@@ -21,3 +21,10 @@ exports.vote = (creatureId, userId) => Creature.findByIdAndUpdate(creatureId, { 
 exports.getById = (creatureId) => Creature.findById(creatureId);
 
 exports.update = (creatureData, creatureId) => Creature.findByIdAndUpdate(creatureId, creatureData, { runValidators: true });
+
+exports.delete = async (creatureId, userId) => {
+    const creature = await Creature.findByIdAndDelete(creatureId);
+    await User.findByIdAndUpdate(userId, { $pull: { creatures: creatureId } });
+
+    return creature;
+};

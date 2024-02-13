@@ -61,6 +61,14 @@ router.post('/post/edit/:id', isOwner, async (req, res) => {
     }
 });
 
+router.get('/post/delete/:id', isOwner, async (req, res) => {
+    const creatureId = req.params.id;
+    const userId = req.user?._id;
+
+    await creaturesServices.delete(creatureId, userId);
+    res.redirect('/posts');
+});
+
 async function isOwner(req, res, next) {
     const creature = await creaturesServices.getById(req.params.id).lean();
 
