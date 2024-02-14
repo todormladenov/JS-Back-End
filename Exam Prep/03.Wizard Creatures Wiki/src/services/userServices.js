@@ -55,3 +55,5 @@ exports.login = async ({ email, password }) => {
 
     return token;
 };
+
+exports.getUserPopulated = (userId) => User.findById(userId).populate('creatures'); 

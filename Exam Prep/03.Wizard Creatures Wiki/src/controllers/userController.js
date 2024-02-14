@@ -1,6 +1,6 @@
 const { getErrorMessage } = require('../utils/error');
 const userServices = require('../services/userServices');
-const { isGuest } = require('../middlewares/authMiddleware');
+const { isGuest, isAuth } = require('../middlewares/authMiddleware');
 
 const router = require('express').Router();
 
@@ -41,6 +41,12 @@ router.post('/user/login', isGuest, async (req, res) => {
 router.get('/user/logout', (req, res) => {
     res.clearCookie('auth');
     res.redirect('/');
+});
+
+router.get('/user/profile', isAuth, async (req, res) => {
+    const userWithCreatures = await userServices.getUserPopulated(req.user._id).lean();
+
+    res.render('profile', { ...userWithCreatures });
 });
 
 module.exports = router;

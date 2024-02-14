@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     creatures: [{
         type: mongoose.Types.ObjectId,
-        ref: 'Creatures'
+        ref: 'Creature'
     }]
 });
 
