@@ -12,7 +12,7 @@ configHandlebars(app);
 
 app.use(router);
 
-mongoose.connect('mongodb://127.0.0.1:27017/wizard-creatures-wiki')
+mongoose.connect('mongodb://127.0.0.1:27017/friendly-world')
     .then(() => console.log('DB is connected'));
     
 app.listen(port, () => console.log('Server is listening'));
