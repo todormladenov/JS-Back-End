@@ -9,4 +9,6 @@ exports.create = async (animalData, userId) => {
     await User.findByIdAndUpdate(userId, { $push: { animals: animal._id } });
 
     return animal;
-}
+};
+
+exports.getAll = () => Animal.find();

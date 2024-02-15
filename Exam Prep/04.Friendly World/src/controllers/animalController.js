@@ -15,10 +15,15 @@ router.post('/animal/create', isAuth, async (req, res) => {
     try {
         await animalServices.create(animalData, userId);
 
-        res.redirect('/');
+        res.redirect('/dashboard');
     } catch (error) {
         res.render('create', { ...animalData, error: getErrorMessage(error) });
     }
+});
+
+router.get('/dashboard', async (req, res) => {
+    const animals = await animalServices.getAll().lean();
+    res.render('dashboard', { animals });
 });
 
 module.exports = router;
