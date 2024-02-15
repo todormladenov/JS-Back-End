@@ -73,4 +73,13 @@ router.get('/animal/delete/:id', isAuth, isOwner, async (req, res) => {
     res.redirect('/dashboard');
 });
 
+router.get('/search', async (req, res) => {
+    try {
+        const animals = await animalServices.search(req.query.location).lean();
+        res.render('search', { animals });
+    } catch (error) {
+        res.render('search', { error: getErrorMessage(error) });
+    }
+});
+
 module.exports = router;

@@ -24,4 +24,6 @@ exports.delete = async (animalId, userId) => {
     await User.findByIdAndUpdate(userId, { $pull: { animals: animalId } });
 
     return animal;
-}
+};
+
+exports.search = (location) => Animal.find({ location: new RegExp(location, 'i') }); 
