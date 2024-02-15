@@ -12,3 +12,7 @@ exports.create = async (animalData, userId) => {
 };
 
 exports.getAll = () => Animal.find();
+
+exports.getAnimalById = (animalId) => Animal.findById(animalId);
+
+exports.donate = (animalId, userId) => Animal.findByIdAndUpdate(animalId, { $push: { donations: userId } });
