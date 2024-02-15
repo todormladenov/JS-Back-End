@@ -64,4 +64,13 @@ router.post('/animal/edit/:id', isAuth, isOwner, async (req, res) => {
     }
 });
 
+router.get('/animal/delete/:id', isAuth, isOwner, async (req, res) => {
+    const animalId = req.params.id;
+    const userId = req.user._id;
+
+    await animalServices.delete(animalId, userId);
+
+    res.redirect('/dashboard');
+});
+
 module.exports = router;

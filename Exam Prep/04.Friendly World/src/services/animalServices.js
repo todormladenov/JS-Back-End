@@ -18,3 +18,10 @@ exports.getAnimalById = (animalId) => Animal.findById(animalId);
 exports.donate = (animalId, userId) => Animal.findByIdAndUpdate(animalId, { $push: { donations: userId } });
 
 exports.edit = (animalId, animalData) => Animal.findByIdAndUpdate(animalId, animalData, { runValidators: true });
+
+exports.delete = async (animalId, userId) => {
+    const animal = await Animal.findByIdAndDelete(animalId);
+    await User.findByIdAndUpdate(userId, { $pull: { animals: animalId } });
+
+    return animal;
+}
