@@ -1,6 +1,7 @@
 const { isAuth } = require('../middlewares/authMiddleware');
 const { getErrorMessage } = require('../utils/error');
 const animalServices = require('../services/animalServices');
+const { isDonated, isOwner } = require('../middlewares/animalsMiddleware');
 
 const router = require('express').Router();
 
@@ -32,18 +33,35 @@ router.get('/animal/details/:id', async (req, res) => {
 
     const animal = await animalServices.getAnimalById(animalId).lean();
 
-    animal.isOwner = animal.owner._id == userId;
+    animal.isOwner = animal.owner == userId;
     animal.isDonated = animal.donations.some(id => id == userId);
 
     res.render('details', { ...animal });
 });
 
-router.get('/animal/donate/:id', isAuth, async (req, res) => {
+router.get('/animal/donate/:id', isAuth, isDonated, async (req, res) => {
     const animalId = req.params.id;
     const userId = req.user._id;
 
     await animalServices.donate(animalId, userId);
     res.redirect(`/animal/details/${animalId}`);
+});
+
+router.get('/animal/edit/:id', isAuth, isOwner, async (req, res) => {
+    res.render('edit', { ...req.animal });
+});
+
+router.post('/animal/edit/:id', isAuth, isOwner, async (req, res) => {
+    const animalData = req.body;
+    const animalId = req.params.id;
+
+    try {
+        await animalServices.edit(animalId, animalData);
+
+        res.redirect(`/animal/details/${animalId}`)
+    } catch (error) {
+        res.render('edit', { ...animalData, error: getErrorMessage(error) });
+    }
 });
 
 module.exports = router;
