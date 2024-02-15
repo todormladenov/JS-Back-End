@@ -26,4 +26,6 @@ exports.delete = async (animalId, userId) => {
     return animal;
 };
 
-exports.search = (location) => Animal.find({ location: new RegExp(location, 'i') }); 
+exports.search = (location) => Animal.find({ location: new RegExp(location, 'i') });
+
+exports.getRecent = () => Animal.find().sort({ createdAt: -1 }).limit(3);
