@@ -1,7 +1,8 @@
 const { isAuth } = require('../middlewares/authMiddleware');
-const { isBought } = require('../middlewares/gameMiddleware');
+const { isBought, isOwner } = require('../middlewares/gameMiddleware');
 const gameServices = require('../services/gameServices');
 const { getErrorMessage } = require('../utils/error');
+const { getSelectedOption } = require('../utils/getSelected');
 
 const router = require('express').Router();
 
@@ -49,6 +50,33 @@ router.get('/game/buy/:id', isAuth, isBought, async (req, res) => {
 
     await gameServices.buy(gameId, userId);
     res.redirect(`/game/details/${gameId}`);
-})
+});
+
+router.get('/game/delete/:id', isAuth, isOwner, async (req, res) => {
+    const gameId = req.params.id;
+
+    await gameServices.delete(gameId);
+    res.redirect('/games');
+});
+
+router.get('/game/edit/:id', isAuth, isOwner, (req, res) => {
+    const game = req.game;
+    game.options = getSelectedOption(game.platform);
+
+    res.render('edit', { ...game });
+});
+
+router.post('/game/edit/:id', isAuth, isOwner, async (req, res) => {
+    const gameData = req.body;
+    const gameId = req.params.id;
+
+    try {
+        await gameServices.update(gameId, gameData);
+        res.redirect(`/game/details/${gameId}`);
+    } catch (error) {
+        gameData.options = getSelectedOption(gameData.platform);
+        res.render('edit', { ...gameData, error: getErrorMessage(error) });
+    }
+});
 
 module.exports = router;
