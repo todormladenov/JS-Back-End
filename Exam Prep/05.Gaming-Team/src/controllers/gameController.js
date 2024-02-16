@@ -79,4 +79,9 @@ router.post('/game/edit/:id', isAuth, isOwner, async (req, res) => {
     }
 });
 
+router.get('/search', isAuth, async (req, res) => {
+    const games = await gameServices.search(req.query).lean();
+    res.render('search', { games });
+});
+
 module.exports = router;
