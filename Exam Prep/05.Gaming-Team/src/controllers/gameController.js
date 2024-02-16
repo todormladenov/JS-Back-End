@@ -18,10 +18,28 @@ router.post('/game/create', isAuth, async (req, res) => {
             owner: userId
         });
 
-        res.redirect('/')
+        res.redirect('/games')
     } catch (error) {
         res.render('create', { ...gameData, error: getErrorMessage(error) });
     }
+});
+
+router.get('/games', async (req, res) => {
+    const games = await gameServices.getAll().lean();
+
+    res.render('catalog', { games });
+});
+
+router.get('/game/details/:id', async (req, res) => {
+    const gameId = req.params.id;
+    const userId = req.user?._id;
+
+    const game = await gameServices.getById(gameId).lean();
+
+    game.isOwner = game.owner == userId;
+    game.isBought = game.boughtBy.some(id => id == userId);
+
+    res.render('details', {...game})
 });
 
 module.exports = router;
