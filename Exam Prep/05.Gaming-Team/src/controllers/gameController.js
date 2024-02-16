@@ -1,4 +1,5 @@
 const { isAuth } = require('../middlewares/authMiddleware');
+const { isBought } = require('../middlewares/gameMiddleware');
 const gameServices = require('../services/gameServices');
 const { getErrorMessage } = require('../utils/error');
 
@@ -39,7 +40,15 @@ router.get('/game/details/:id', async (req, res) => {
     game.isOwner = game.owner == userId;
     game.isBought = game.boughtBy.some(id => id == userId);
 
-    res.render('details', {...game})
+    res.render('details', { ...game });
 });
+
+router.get('/game/buy/:id', isAuth, isBought, async (req, res) => {
+    const gameId = req.params.id;
+    const userId = req.user?._id;
+
+    await gameServices.buy(gameId, userId);
+    res.redirect(`/game/details/${gameId}`);
+})
 
 module.exports = router;
