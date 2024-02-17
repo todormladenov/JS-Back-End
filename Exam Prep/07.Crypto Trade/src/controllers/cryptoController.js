@@ -56,4 +56,25 @@ router.get('/:id/delete', isAuth, isOwner, async (req, res) => {
     res.redirect('/crypto');
 });
 
+router.get('/:id/edit', isAuth, isOwner, (req, res) => {
+    res.render('edit', { ...req.crypto, options: getOptions(req.crypto.payment) });
+});
+
+router.post('/:id/edit', isAuth, isOwner, async (req, res) => {
+    const cryptoData = req.body;
+    const cryptoId = req.params.id;
+
+    try {
+        await cryptoServices.update(cryptoId, cryptoData);
+
+        res.redirect(`/crypto/${cryptoId}/details`);
+    } catch (error) {
+        res.render('edit', {
+            ...cryptoData,
+            options: getOptions(cryptoData.payment),
+            error: getErrorMessage(error)
+        });
+    }
+});
+
 module.exports = router;

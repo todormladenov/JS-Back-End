@@ -9,3 +9,5 @@ exports.getById = (cryptoId) => Crypto.findById(cryptoId);
 exports.buy = (cryptoId, userId) => Crypto.findByIdAndUpdate(cryptoId, { $push: { boughtBy: userId } });
 
 exports.delete = (cryptoId) => Crypto.findByIdAndDelete(cryptoId);
+
+exports.update = (cryptoId, cryptoData) => Crypto.findByIdAndUpdate(cryptoId, cryptoData, { runValidators: true });
