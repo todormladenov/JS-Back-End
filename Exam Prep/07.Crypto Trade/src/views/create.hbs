@@ -13,10 +13,14 @@
             <textarea id="description" name="description" placeholder="Introduce your coins...">{{description}}</textarea>
             <label>Payment method:</label>
             <select id="payment" name="payment">
+                {{#each options}}
+                <option value="{{value}}" {{#if selected}} selected {{/if}}>{{value}}</option>
+                {{else}}
                 <option value="crypto-wallet">Crypto Wallet</option>
                 <option value="credit-card">Credit Card</option>
                 <option value="debit-card">Debit Card</option>
                 <option value="paypal">PayPal</option>
+                {{/each}}
             </select>
             <input type="submit" id="btn" value="TRADE"></input>
         </form>
