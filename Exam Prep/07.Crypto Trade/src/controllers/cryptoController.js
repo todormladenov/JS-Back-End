@@ -1,5 +1,5 @@
 const { isAuth } = require('../middlewares/authMiddleware');
-const { isBought } = require('../middlewares/cryptoMiddleware');
+const { isBought, isOwner } = require('../middlewares/cryptoMiddleware');
 const cryptoServices = require('../services/cryptoServices');
 const { getErrorMessage } = require('../utils/error');
 const getOptions = require('../utils/getOptions');
@@ -47,6 +47,13 @@ router.get('/:id/buy', isAuth, isBought, async (req, res) => {
 
     await cryptoServices.buy(cryptoId, userId);
     res.redirect(`/crypto/${cryptoId}/details`);
+});
+
+router.get('/:id/delete', isAuth, isOwner, async (req, res) => {
+    const cryptoId = req.params.id;
+
+    await cryptoServices.delete(cryptoId);
+    res.redirect('/crypto');
 });
 
 module.exports = router;
