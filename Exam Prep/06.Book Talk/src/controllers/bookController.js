@@ -54,4 +54,21 @@ router.get('/:id/delete', isAuth, isOwner, async (req, res) => {
     res.redirect('/book/catalog');
 });
 
+router.get('/:id/edit', isAuth, isOwner, (req, res) => {
+    res.render('edit', { ...req.book });
+});
+
+router.post('/:id/edit', isAuth, isOwner, async (req, res) => {
+    const bookData = req.body;
+    const bookId = req.params.id;
+
+    try {
+        await bookServices.update(bookId, bookData);
+
+        res.redirect(`/book/${bookId}/details`);
+    } catch (error) {
+        res.render('edit', { ...bookData, error: getErrorMessage(error) });
+    }
+});
+
 module.exports = router;

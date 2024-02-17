@@ -20,3 +20,5 @@ exports.delete = async (bookId, userId) => {
 
     return book;
 };
+
+exports.update = (bookId, bookData) => Book.findByIdAndUpdate(bookId, bookData, { runValidators: true });
