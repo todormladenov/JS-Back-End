@@ -27,4 +27,17 @@ router.post('/create', isAuth, async (req, res) => {
         res.render('create', { ...cryptoData, error: getErrorMessage(error) });
     }
 });
+
+router.get('/:id/details', async (req, res) => {
+    const cryptoId = req.params.id;
+    const userId = req.user?._id;
+
+    const crypto = await cryptoServices.getById(cryptoId).lean();
+
+    crypto.isOwner = crypto.owner == userId;
+    crypto.isBought = crypto.boughtBy.some(id => id == userId);
+
+    res.render('details', { ...crypto });
+});
+
 module.exports = router;
