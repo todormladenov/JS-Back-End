@@ -19,13 +19,14 @@
             <nav class="navbar">
                 <a href="/">Home</a>
                 <a href="/book/catalog">Catalog</a>
-                <!--Only for logged user-->
+                {{#if isAuthenticated}}
                 <a href="/user/profile">Profile</a>
                 <a href="/book/create">Create Book</a>
                 <a href="/user/logout">Logout</a>
-                <!--Only for guest-->
+                {{else}}
                 <a href="/user/login">Login</a>
                 <a href="/user/register">Register</a>
+                {{/if}}
             </nav>
         </div>
 
