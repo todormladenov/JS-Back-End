@@ -7,4 +7,8 @@ router.use(homeController);
 router.use('/user', userController);
 router.use('/book', bookController);
 
+router.get('*', (req, res) => {
+    res.render('404');
+});
+
 module.exports = router;

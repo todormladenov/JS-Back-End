@@ -62,3 +62,5 @@ exports.login = async (userData) => {
 
     return token;
 };
+
+exports.getUserPopulated = (userId) => User.findById(userId).populate('wishList');

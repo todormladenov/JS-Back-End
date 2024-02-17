@@ -3,11 +3,11 @@ const { isAuth, isGuest } = require('../middlewares/authMiddleware');
 const userServices = require('../services/userServices');
 const { getErrorMessage } = require('../utils/error');
 
-router.get('/register', isGuest ,(req, res) => {
+router.get('/register', isGuest, (req, res) => {
     res.render('register');
 });
 
-router.post('/register', isGuest ,async (req, res) => {
+router.post('/register', isGuest, async (req, res) => {
     const userData = req.body;
 
     try {
@@ -21,11 +21,11 @@ router.post('/register', isGuest ,async (req, res) => {
 
 });
 
-router.get('/login', isGuest ,(req, res) => {
+router.get('/login', isGuest, (req, res) => {
     res.render('login');
 });
 
-router.post('/login', isGuest ,async (req, res) => {
+router.post('/login', isGuest, async (req, res) => {
     const userData = req.body;
 
     try {
@@ -36,6 +36,12 @@ router.post('/login', isGuest ,async (req, res) => {
     } catch (error) {
         res.render('login', { ...userData, error: getErrorMessage(error) });
     }
+});
+
+router.get('/profile', isAuth, async (req, res) => {
+    const user = await userServices.getUserPopulated(req.user._id).lean();
+
+    res.render('profile', { ...user });
 });
 
 router.get('/logout', isAuth, (req, res) => {
