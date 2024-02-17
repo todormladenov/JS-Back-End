@@ -5,3 +5,5 @@ exports.create = (cryptoData, userId) => Crypto.create({ ...cryptoData, owner: u
 exports.getAll = () => Crypto.find();
 
 exports.getById = (cryptoId) => Crypto.findById(cryptoId);
+
+exports.buy = (cryptoId, userId) => Crypto.findByIdAndUpdate(cryptoId, { $push: { boughtBy: userId } });
