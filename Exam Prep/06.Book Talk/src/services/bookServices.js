@@ -12,4 +12,11 @@ exports.wish = async (bookId, userId) => {
     await User.findByIdAndUpdate(userId, { $push: { wishList: bookId } });
 
     return book;
-} 
+};
+
+exports.delete = async (bookId, userId) => {
+    const book = await Book.findByIdAndDelete(bookId);
+    await User.updateMany({ wishList: bookId }, { $pull: { wishList: bookId } });
+
+    return book;
+};

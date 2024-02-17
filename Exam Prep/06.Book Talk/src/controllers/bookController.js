@@ -1,7 +1,7 @@
 const { isAuth } = require('../middlewares/authMiddleware');
 const { getErrorMessage } = require('../utils/error');
 const bookServices = require('../services/bookServices');
-const { isWished } = require('../middlewares/bookMiddleware');
+const { isWished, isOwner } = require('../middlewares/bookMiddleware');
 const router = require('express').Router();
 
 router.get('/create', isAuth, (req, res) => {
@@ -44,6 +44,14 @@ router.get('/:id/wish', isAuth, isWished, async (req, res) => {
 
     await bookServices.wish(bookId, userId);
     res.redirect(`/book/${bookId}/details`);
+});
+
+router.get('/:id/delete', isAuth, isOwner, async (req, res) => {
+    const bookId = req.params.id;
+    const userId = req.user?._id;
+
+    await bookServices.delete(bookId, userId);
+    res.redirect('/book/catalog');
 });
 
 module.exports = router;
