@@ -11,3 +11,17 @@ exports.buy = (cryptoId, userId) => Crypto.findByIdAndUpdate(cryptoId, { $push: 
 exports.delete = (cryptoId) => Crypto.findByIdAndDelete(cryptoId);
 
 exports.update = (cryptoId, cryptoData) => Crypto.findByIdAndUpdate(cryptoId, cryptoData, { runValidators: true });
+
+exports.search = ({ name, payment }) => {
+    const query = {};
+
+    if (name) {
+        query.name = new RegExp(name, 'i');
+    }
+
+    if (payment) {
+        query.payment = payment
+    }
+
+    return Crypto.find(query);
+};
